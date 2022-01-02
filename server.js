@@ -21,6 +21,10 @@ app.use('/buyer', buyerRoute);
 const sellerRoute = require('./routes/seller')
 app.use('/seller', sellerRoute);
 
+app.get('/', async (req, res) => {
+  console.log("HELLO WORLD")
+});
+
 // Global error handling
 // app.use((_req, res) => {
 //   console.error(err.stack);
