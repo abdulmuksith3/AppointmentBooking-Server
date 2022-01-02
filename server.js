@@ -1,11 +1,19 @@
 const express = require('express');
-// const cors = require('cors');
+const cors = require('cors');
 const dbo = require('./db');
-const PORT = 3000;
 const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.use(express.json());
 
 // app.use(cors());
-app.use(express.json());
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+});
 
 const buyerRoute = require('./routes/buyer')
 app.use('/buyer', buyerRoute);
@@ -20,7 +28,6 @@ app.use('/seller', sellerRoute);
 // });
 
 
-// perform a database connection when the server starts
 dbo.connectToServer((err) => {
   if (err) {
     console.error(err);
