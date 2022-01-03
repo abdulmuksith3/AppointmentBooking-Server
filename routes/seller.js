@@ -98,9 +98,6 @@ router.post('/acceptRequest', async (req, res) => {
             {$push: {appointments : document}}
         )
 
-
-
-
         res.send({message:"Success"});
     } catch (error) {
         res.status(400).send(`Error Accepting`);
@@ -126,7 +123,7 @@ router.post('/rejectRequest', async (req, res) => {
         .collection('sellers')
         .updateOne(
             {_id: ObjectId(sellerId), 'requests._id': ObjectId(appointmentId)},
-            {$set: {"appointments.$.status" : "REJECTED"}}
+            {$set: {"requests.$.status" : "REJECTED"}}
         )
 
 
@@ -135,6 +132,28 @@ router.post('/rejectRequest', async (req, res) => {
         res.status(400).send(`Error Accepting`);
     }
     console.log("rejectRequest END")
+});
+
+router.post('/updateAvailability', async (req, res) => {
+    console.log("updateAvailability - START")
+    const {_id, timings} = req.body;
+    const dbConnect = dbo.getDb();
+
+    console.log(_id,"---",timings)
+
+    // try {        
+    //     dbConnect
+    //     .collection('sellers')
+    //     .updateOne(
+    //         {_id: ObjectId(_id)}, 
+    //         {$set: {availability : timings}}
+    //     )
+
+    //     res.send({message:"Success"});
+    // } catch (error) {
+    //     res.status(400).send(`Error updateAvailability`, error);
+    // }
+    console.log("updateAvailability END")
 });
 
 module.exports = router;
