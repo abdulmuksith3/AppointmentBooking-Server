@@ -139,20 +139,20 @@ router.post('/updateAvailability', async (req, res) => {
     const {_id, timings} = req.body;
     const dbConnect = dbo.getDb();
 
-    console.log(_id,"---",timings)
+    // console.log(_id,"---",timings)
 
-    // try {        
-    //     dbConnect
-    //     .collection('sellers')
-    //     .updateOne(
-    //         {_id: ObjectId(_id)}, 
-    //         {$set: {availability : timings}}
-    //     )
+    try {        
+        dbConnect
+        .collection('sellers')
+        .updateOne(
+            {_id: ObjectId(_id)}, 
+            {$set: {availability : timings}}
+        )
 
-    //     res.send({message:"Success"});
-    // } catch (error) {
-    //     res.status(400).send(`Error updateAvailability`, error);
-    // }
+        res.send({message:"Success"});
+    } catch (error) {
+        res.status(400).send(`Error updateAvailability`, error);
+    }
     console.log("updateAvailability END")
 });
 
