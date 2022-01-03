@@ -95,7 +95,7 @@ router.post('/cancelAppointment', async (req, res) => {
             .collection('sellers')
             .updateOne(
                 {_id: ObjectId(sellerId), 'requests._id': ObjectId(appointmentId)},
-                {$pull: {}}
+                {$set: {"requests.$.status" : "CANCELLED"}}
             )
 
         } else {
