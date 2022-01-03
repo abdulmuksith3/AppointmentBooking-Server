@@ -31,7 +31,6 @@ router.get('/findAll', async (req, res) => {
         .collection('sellers')
         .find({})
         .project(projection)
-        .limit(10)
         .toArray();
 
         res.send(result);
@@ -77,8 +76,6 @@ router.post('/acceptRequest', async (req, res) => {
         status: "ACCEPTED"       
     }
 
-    console.log(document)
-
     try {
         dbConnect
         .collection('buyers')
@@ -90,16 +87,18 @@ router.post('/acceptRequest', async (req, res) => {
         dbConnect
         .collection('sellers')
         .updateOne(
+            {_id: ObjectId(sellerId), 'requests._id': ObjectId(appointmentId)},
+            {$set: {"requests.$.status" : "ACCEPTED"}}
+        )
+        
+        dbConnect
+        .collection('sellers')
+        .updateOne(
             {_id: ObjectId(sellerId)},
             {$push: {appointments : document}}
         )
 
-        dbConnect
-        .collection('sellers')
-        .updateOne(
-            {_id: ObjectId(sellerId), 'requests._id': ObjectId(appointmentId)},
-            {$pull: {}}
-        )
+
 
 
         res.send({message:"Success"});
@@ -107,6 +106,35 @@ router.post('/acceptRequest', async (req, res) => {
         res.status(400).send(`Error Accepting`);
     }
     console.log("acceptRequest END")
+});
+
+
+router.post('/rejectRequest', async (req, res) => {
+    console.log("rejectRequest - START")
+    const {buyerId, appointmentId, sellerId, date, time} = req.body;
+    const dbConnect = dbo.getDb();
+    
+    try {
+        dbConnect
+        .collection('buyers')
+        .updateOne(
+            {_id: ObjectId(buyerId), 'appointments._id': ObjectId(appointmentId)}, 
+            {$set: {"appointments.$.status" : "REJECTED"}}
+        )
+
+        dbConnect
+        .collection('sellers')
+        .updateOne(
+            {_id: ObjectId(sellerId), 'requests._id': ObjectId(appointmentId)},
+            {$set: {"appointments.$.status" : "REJECTED"}}
+        )
+
+
+        res.send({message:"Success"});
+    } catch (error) {
+        res.status(400).send(`Error Accepting`);
+    }
+    console.log("rejectRequest END")
 });
 
 module.exports = router;

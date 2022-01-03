@@ -5,7 +5,7 @@ const dbo = require('../db')
 
 
 router.get('/findOne/:uid', async (req, res) => {
-    console.log("findOne", req.body)
+    // console.log("findOne", req.body)
 
     const uid = req.params.uid
     const dbConnect = dbo.getDb();
@@ -17,7 +17,26 @@ router.get('/findOne/:uid', async (req, res) => {
         res.status(400).send(`Error fetching User - ${uid}`);
     }
 
-    console.log("findOne END")
+    // console.log("findOne END")
+});
+
+router.get('/findAll', async (req, res) => {
+    // console.log("findAll", req.body)
+    const projection = {fullName: 1, photoURL: 1}
+    const dbConnect = dbo.getDb();
+    try {
+        const result = await dbConnect
+        .collection('buyers')
+        .find({})
+        .project(projection)
+        .toArray();
+
+        res.send(result);
+    } catch (error) {
+        res.status(400).send(`Error fetching all Users`);
+    }
+
+    // console.log("search END")
 });
 
 router.post('/bookAppointment', async (req, res) => {
